@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  ajcmain:
+    image: ajcmain
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PPASSWORD: Pa$$w0r,d
+      MYSQL_DATABASE: ajc
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./ajc.sql:/docker-entrypoint-initdb.d/ajc.sql
+    networks:
+      - backend
+volumes:
+  db:
+
+networks:
+  backend:
+    name: backend-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.17.0.0/24
